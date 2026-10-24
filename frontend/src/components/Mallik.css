@@ -1,0 +1,82 @@
+/* Stage is a 16:10 container; every inner size uses cqw (% of stage width),
+   so the whole scene scales perfectly from phones to desktop. */
+.mallik-hero {
+  position: relative;
+  width: 100%;
+  max-width: 560px;
+  margin: 0 auto;
+  aspect-ratio: 16 / 10;
+  container-type: inline-size;
+  outline: none;
+  border-radius: 16px;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.mallik-hero:focus-visible {
+  box-shadow: 0 0 0 3px rgba(236, 100, 28, 0.55);
+}
+
+/* Character */
+.mh-char {
+  position: absolute;
+  left: 3cqw;
+  top: 2.5cqw;
+  height: 58cqw;
+  aspect-ratio: 252 / 306;
+  opacity: 0; /* animated in */
+}
+
+.mh-char img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-origin: 50% 100%;
+  pointer-events: none;
+  filter: drop-shadow(0 1.2cqw 1.6cqw rgba(0, 0, 0, 0.22));
+}
+
+/* Brand text (add Montserrat 800 in index.html for the exact look) */
+.mh-text {
+  position: absolute;
+  left: 51cqw;
+  top: 20.5cqw;
+  font-family: "Montserrat", "Poppins", "Segoe UI", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: 10.4cqw;
+  line-height: 1.04;
+  letter-spacing: -0.02em;
+  color: #ec641c;
+  white-space: nowrap;
+}
+
+.mh-line {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.06em;
+}
+
+.mh-line > span {
+  display: inline-block;
+  opacity: 0; /* animated in */
+  will-change: transform;
+}
+
+/* Flying tools */
+.mh-tool {
+  position: absolute;
+  left: 0;
+  top: 0;
+  height: var(--h, 14cqw);
+  width: auto;
+  opacity: 0; /* animated in */
+  transform-origin: 50% 50%;
+  pointer-events: none;
+  will-change: transform, opacity;
+  filter: drop-shadow(0 0.6cqw 0.8cqw rgba(0, 0, 0, 0.3));
+}
+
+/* Reduced motion / no WAAPI: show the final frame, no tools */
+.mallik-hero.is-static .mh-char,
+.mallik-hero.is-static .mh-line > span { opacity: 1; }
+.mallik-hero.is-static .mh-tool { display: none; }
