@@ -58,10 +58,10 @@ export default function App() {
   import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { AuthProvider } from "./context/authcontext.jsx";
 import ProtectedRoute from "./components/protectedRoute.jsx";
-import Login from "./pages/Login.jsx";
+import Login from "./pages/login.jsx";
 import Signup from "./pages/signup.jsx";
 import Home from "./pages/home.jsx";
-import Book from "./pages/Book.jsx";
+import Book from "./pages/book.jsx";
 import MyBookings from "./pages/myBookings.jsx";
 import AdminDashboard from "./pages/adminDashboard.jsx";
 import CompleteProfile from "./pages/CompleteProfile.jsx";
