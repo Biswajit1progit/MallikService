@@ -18,7 +18,7 @@ router.get("/me", verifyToken, (req, res) => {
 export default router; */
 
 import express from "express";
-import { signup, login, googleAuth, refresh, logout, getMe, updateProfile } from "../controller/authController.js";
+import { signup, login, googleAuth, refresh, logout, getMe, updateProfile } from "../controller/authcontroller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();

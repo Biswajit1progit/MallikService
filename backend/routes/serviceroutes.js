@@ -1,5 +1,5 @@
 import express from "express";
-import { listServices, getServiceById } from "../controller/serviceController.js";
+import { listServices, getServiceById } from "../controller/servicecontroller.js";
 
 const router = express.Router();
 

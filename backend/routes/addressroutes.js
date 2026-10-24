@@ -1,5 +1,5 @@
 import express from "express";
-import { createAddress, listAddresses, deleteAddress } from "../controller/addressController.js";
+import { createAddress, listAddresses, deleteAddress } from "../controller/addresscontroller.js";
 import { verifyToken } from "../middleware/verifyToken.js";
 
 const router = express.Router();
