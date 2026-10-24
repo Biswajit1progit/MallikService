@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { apiClient } from "../api/client.js";
 import { payForBooking } from "../utils/razorpay.js";
-import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/ServiceIcons.jsx";
+import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/serviceIcons.jsx";
 import LocationPicker from "../components/LocationPicker.jsx";
-import StatusBadge from "../components/StatusBadge.jsx";
+import StatusBadge from "../components/statusBadge.jsx";
 
 const iconByName = {
   "AC Installation & Uninstallation": IconTools,
