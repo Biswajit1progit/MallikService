@@ -123,8 +123,8 @@ export default function Login() {
 
   import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import AuthLayout from "../components/AuthLayout.jsx";
-import GoogleAuthButton from "../components/GoogleAuthButton.jsx";
+import AuthLayout from "../components/authLayout.jsx";
+import GoogleAuthButton from "../components/googleAuthButton.jsx";
 import { apiClient } from "../api/client.js";
 import { useAuth } from "../context/authcontext.jsx";
 import { homeFor } from "../utils/roleHome.js";

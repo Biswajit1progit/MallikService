@@ -3,9 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { apiClient } from "../api/client.js";
 import { useAuth } from "../context/authcontext.jsx";
 import { useLocationSharing } from "../utils/useLocationSharing.js";
-import StatusBadge from "../components/StatusBadge.jsx";
+import StatusBadge from "../components/statusBadge.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
-import CompletionForm from "../components/CompletionForm.jsx";
+import CompletionForm from "../components/Completionform.jsx";
 import CallPanel from "../components/Callpanel.jsx";
 
 // The ONE next step per status. A technician never sees a menu of every status.

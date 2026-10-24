@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
 import { useAuth } from "../context/authcontext.jsx";
-import TechnicianIllustration from "../components/TechnicianIllustration.jsx";
+import TechnicianIllustration from "../components/technicianIllustration.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
-import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/ServiceIcons.jsx";
+import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/serviceIcons.jsx";
 
 const services = [
   {
