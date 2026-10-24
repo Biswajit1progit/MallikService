@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { apiClient } from "../api/client.js";
 import { payForBooking } from "../utils/razorpay.js";
-import StatusBadge from "../components/StatusBadge.jsx";
+import StatusBadge from "../components/statusBadge.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
-import CompletionReview from "../components/CompletionReview.jsx";
+import CompletionReview from "../components/Completionreview.jsx";
 
 // Statuses the customer is still allowed to cancel/reschedule from -
 // mirrors CUSTOMER_MODIFIABLE_STATUSES on the backend, kept in sync manually.
