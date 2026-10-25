@@ -7,6 +7,7 @@ import StatusBadge from "../components/statusBadge.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import CompletionForm from "../components/Completionform.jsx";
 import CallPanel from "../components/Callpanel.jsx";
+import BrandName from "../components/Brandname.jsx";
 
 // The ONE next step per status. A technician never sees a menu of every status.
 const NEXT_STEP = {
@@ -138,7 +139,8 @@ export default function TechnicianDashboard() {
       <header className="relative z-10 flex justify-between items-center px-5 py-4 border-b border-white/10 backdrop-blur-md">
         <div>
           <div className="font-display font-bold text-lg leading-tight">
-            ServiceBook <span className="text-brand-accent text-sm font-normal">Technician</span>
+          <BrandName /> <span className="text-brand-accent text-sm font-normal">Technician</span>
+
           </div>
           <div className="text-xs text-white/50">{profile?.name || user?.name}</div>
         </div>

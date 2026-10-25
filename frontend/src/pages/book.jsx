@@ -1,3 +1,4 @@
+import BrandName from "../components/Brandname.jsx";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { apiClient } from "../api/client.js";
@@ -207,7 +208,7 @@ export default function Book() {
         <div className="pointer-events-none fixed -top-32 left-1/4 w-72 h-72 bg-mist-a blur-3xl" />
         <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10">
           <Link to="/" className="font-display font-bold text-lg sm:text-xl">
-            ServiceBook
+            <BrandName />
           </Link>
         </header>
 
@@ -250,6 +251,47 @@ export default function Book() {
               {paymentError}
             </div>
           )}
+
+          {/* How the money works: deposit now, rest after the work, deposit deducted */}
+          <div className="rounded-2xl border border-brand-cool/25 bg-brand-cool/[0.06] p-4 sm:p-5 text-left mb-6">
+            <div className="font-mono text-[10px] tracking-[0.1em] uppercase text-brand-cool mb-3">
+              How your payment works
+            </div>
+            <ol className="space-y-3.5">
+              <li className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-brand-accent text-white text-xs font-bold flex items-center justify-center">1</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold">
+                    Pay <span className="text-brand-accent">₹{createdBooking.booking_charge}</span> now
+                  </div>
+                  <div className="text-xs text-white/55 leading-relaxed">
+                    This booking charge confirms your slot.
+                  </div>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-white/10 text-white/80 text-xs font-bold flex items-center justify-center">2</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold">Rest is paid after the work</div>
+                  <div className="text-xs text-white/55 leading-relaxed">
+                    The technician decides the final price on site. You approve it before the job closes.
+                  </div>
+                </div>
+              </li>
+              <li className="flex gap-3">
+                <span className="shrink-0 w-6 h-6 rounded-full bg-white/10 text-white/80 text-xs font-bold flex items-center justify-center">3</span>
+                <div className="min-w-0">
+                  <div className="text-sm font-semibold">
+                    Your ₹{createdBooking.booking_charge} is deducted
+                  </div>
+                  <div className="text-xs text-white/55 leading-relaxed">
+                    You only pay the final price minus ₹{createdBooking.booking_charge}. For example, if the
+                    final price is ₹1,000, you pay ₹{Math.max(1000 - Number(createdBooking.booking_charge || 0), 0)} after the work.
+                  </div>
+                </div>
+              </li>
+            </ol>
+          </div>
 
           <p className="text-xs text-white/40 mb-6 leading-relaxed">
             Full refund if cancelled anytime before the technician starts heading your way.
@@ -295,7 +337,7 @@ export default function Book() {
 
       <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
         <Link to="/" className="font-display font-bold text-lg sm:text-xl">
-          ServiceBook
+          <BrandName />
         </Link>
         <Link
           to="/bookings"

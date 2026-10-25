@@ -12,6 +12,7 @@ import AdminActivityFeed from "../components/Adminactivityfeed.jsx";
 import AdminTechnicians from "../components/Admintechnicians.jsx";
 import AdminRefunds from "../components/Adminrefund.jsx";
 import AdminReports from "../components/Adminreports.jsx";
+import BrandName from "../components/Brandname.jsx";
 
 // Single primary next-action per status - keeps the dashboard to one clear
 // tap per job instead of a confusing dropdown of every possible status.
@@ -377,7 +378,7 @@ export default function AdminDashboard() {
 
       <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
         <Link to="/" className="font-display font-bold text-lg sm:text-xl">
-          ServiceBook <span className="text-brand-accent text-sm font-normal">Admin</span>
+          <BrandName/> <span className="text-brand-accent text-sm font-normal">Admin</span>
         </Link>
         <NotificationBell />
       </header>

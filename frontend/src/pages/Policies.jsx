@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { apiClient } from "../api/client.js";
+import BrandName from "../components/Brandname.jsx";
 
 // Public page (no login). Every number comes from /api/policy, which reads the same
 // database tables and constants the booking and refund code uses - so this page can
@@ -31,9 +32,7 @@ export default function Policies() {
     <div className="min-h-screen bg-ink text-white relative overflow-x-hidden">
       <div className="pointer-events-none fixed -top-32 left-1/4 w-72 h-72 bg-mist-a blur-3xl" />
       <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
-        <Link to="/" className="font-display font-bold text-lg sm:text-xl">
-          ServiceBook
-        </Link>
+        <BrandName />
         <Link to="/" className="text-sm text-brand-cool hover:underline">
           ← Home
         </Link>

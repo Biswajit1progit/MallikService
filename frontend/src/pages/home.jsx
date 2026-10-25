@@ -7,6 +7,7 @@ import TechnicianIllustration from "../components/technicianIllustration.jsx";
 import LoginVideo from "../components/loginvideo.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/serviceIcons.jsx";
+import BrandName from "../components/Brandname.jsx";
 
 const services = [
   {
@@ -176,8 +177,7 @@ export default function Home() {
 
       {/* Header */}
       <header className="relative z-10 flex justify-between items-center gap-3 px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
-        <span className="font-display font-bold text-lg sm:text-xl shrink-0">ServiceBook</span>
-
+        <BrandName />
         {isLoading ? null : user ? (
           <div className="flex items-center gap-2 sm:gap-3.5 min-w-0">
             {user.role === "technician" && (
