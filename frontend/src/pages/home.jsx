@@ -4,7 +4,7 @@ import { apiClient } from "../api/client.js";
 import StatusBadge from "../components/statusBadge.jsx";
 import { useAuth } from "../context/authcontext.jsx";
 import TechnicianIllustration from "../components/technicianIllustration.jsx";
-
+import LoginVideo from "../components/loginvideo.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/serviceIcons.jsx";
 
@@ -79,7 +79,7 @@ function CustomerHome({ user }) {
           <p className="text-sm text-white/55 mt-1">What can we help with today?</p>
         </div>
         <div className="shrink-0 w-[140px] sm:w-[180px] pt-2">
-          <ToolCatchAnimation className="w-full h-auto" />
+          <LoginVideo className="w-full h-auto" />
         </div>
       </div>
 
@@ -256,7 +256,7 @@ export default function Home() {
           </div>
 
           {/* Technician catching his tools (animated; still picture if the phone asks for reduced motion) */}
-          <ToolCatchAnimation className="mt-8 sm:mt-10 w-full max-w-[340px] sm:max-w-[400px] h-auto mx-auto sm:mx-0" />
+          <LoginVideo className="mt-8 sm:mt-10 w-full max-w-[340px] sm:max-w-[400px] h-auto mx-auto sm:mx-0" />
 
           {/* Trust bar */}
           <div className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-4 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
