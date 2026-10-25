@@ -79,9 +79,9 @@ function CustomerHome({ user }) {
           </h1>
           <p className="text-sm text-white/55 mt-1">What can we help with today?</p>
         </div>
-        <div className="shrink-0 w-[140px] sm:w-[180px] pt-2">
+       {/*  <div className="shrink-0 w-[140px] sm:w-[180px] pt-2">
           <LoginVideo className="w-full h-auto" />
-        </div>
+        </div> */}
       </div>
 
       {/* Next visit */}
