@@ -43,7 +43,6 @@ const steps = [
 ];
 
 const CLOSED = ["COMPLETED", "CANCELLED", "NO_SHOW"];
-const quickSteps = ["Book & pay deposit", "Technician calls you", "Track live", "Service + warranty"];
 
 // Signed-in customer: short, action-first home screen.
 function CustomerHome({ user }) {
@@ -148,13 +147,17 @@ function CustomerHome({ user }) {
         </div>
       </div>
 
-      {/* How it works strip */}
-      <div className="font-mono text-[10px] tracking-[0.1em] uppercase text-brand-cool mb-2">How it works</div>
-      <div className="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 sm:mx-0 sm:px-0">
-        {quickSteps.map((t, i) => (
-          <div key={t} className="shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/70">
-            <span className="font-display font-bold text-white/25 mr-1.5">{i + 1}</span>
-            {t}
+      {/* How it works (same steps as the landing page, with full descriptions) */}
+      <div className="mb-6">
+        <span className="font-mono text-[10px] sm:text-xs tracking-[0.1em] uppercase text-brand-cool">The process</span>
+        <h2 className="font-display text-xl sm:text-2xl font-semibold mt-2">How it works</h2>
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+        {steps.map((step) => (
+          <div key={step.n}>
+            <span className="font-display text-2xl sm:text-3xl font-bold text-white/10">{step.n}</span>
+            <h3 className="font-display font-semibold text-sm sm:text-base mt-2 mb-1.5">{step.title}</h3>
+            <p className="text-[13px] sm:text-sm text-white/55 leading-relaxed">{step.desc}</p>
           </div>
         ))}
       </div>
