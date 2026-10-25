@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 import { useNavigate } from "react-router-dom";
 import { apiClient, getAccessToken } from "../api/client.js";
 import { getSocket } from "../utils/socket.js";
@@ -42,6 +43,8 @@ export default function NotificationBell() {
   const [pushError, setPushError] = useState("");
   const [toast, setToast] = useState(null);
   const boxRef = useRef(null);
+  const panelRef = useRef(null);
+  const [pos, setPos] = useState({ top: 64, right: 12 });
   const toastTimer = useRef(null);
 
   const load = useCallback(async () => {
@@ -94,10 +97,31 @@ export default function NotificationBell() {
     };
   }, []);
 
+  // The panel is drawn on <body> (a "portal"), so no page header or card can ever paint on top of it.
+  // This keeps it lined up under the bell button.
+  const place = useCallback(() => {
+    const r = boxRef.current?.getBoundingClientRect();
+    if (r) setPos({ top: Math.round(r.bottom + 8), right: Math.max(12, Math.round(window.innerWidth - r.right)) });
+  }, []);
+
+  useEffect(() => {
+    if (!open) return undefined;
+    place();
+    window.addEventListener("resize", place);
+    window.addEventListener("scroll", place, true);
+    return () => {
+      window.removeEventListener("resize", place);
+      window.removeEventListener("scroll", place, true);
+    };
+  }, [open, place]);
+
   // close on outside tap or Escape
   useEffect(() => {
     if (!open) return undefined;
-    const onDown = (e) => boxRef.current && !boxRef.current.contains(e.target) && setOpen(false);
+    const onDown = (e) => {
+      if (boxRef.current?.contains(e.target) || panelRef.current?.contains(e.target)) return;
+      setOpen(false);
+    };
     const onKey = (e) => e.key === "Escape" && setOpen(false);
     document.addEventListener("pointerdown", onDown);
     document.addEventListener("keydown", onKey);
@@ -161,8 +185,13 @@ export default function NotificationBell() {
         )}
       </button>
 
-      {open && (
-        <div className="fixed inset-x-3 top-[4.5rem] sm:absolute sm:inset-x-auto sm:right-0 sm:top-full sm:mt-2 sm:w-96 z-50 rounded-2xl border border-white/10 bg-ink shadow-2xl shadow-black/50 overflow-hidden">
+      {open &&
+        createPortal(
+        <div
+          ref={panelRef}
+          style={{ top: pos.top, "--bell-right": `${pos.right}px` }}
+          className="fixed z-[60] left-3 right-3 sm:left-auto sm:right-[var(--bell-right)] sm:w-96 text-white rounded-2xl border border-white/10 bg-ink shadow-2xl shadow-black/50 overflow-hidden"
+        >
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
             <div className="font-display font-semibold text-sm">Notifications</div>
             {unread > 0 && (
@@ -212,17 +241,20 @@ export default function NotificationBell() {
             </div>
             {pushError && <div className="mt-2 text-xs text-red-300">{pushError}</div>}
           </div>
-        </div>
+        </div>,
+        document.body
       )}
 
-      {toast && !open && (
+      {toast && !open &&
+        createPortal(
         <button
           onClick={() => openItem(toast)}
-          className="fixed z-50 left-3 right-3 bottom-4 sm:left-auto sm:right-5 sm:w-80 text-left rounded-xl border border-white/10 bg-ink shadow-2xl shadow-black/50 px-4 py-3"
+          className="fixed z-[60] left-3 right-3 bottom-20 sm:bottom-5 sm:left-auto sm:right-5 sm:w-80 text-white text-left rounded-xl border border-white/10 bg-ink shadow-2xl shadow-black/50 px-4 py-3"
         >
           <div className="text-sm font-semibold">{toast.title}</div>
           <div className="text-xs text-white/65 mt-0.5 leading-snug">{toast.body}</div>
-        </button>
+        </button>,
+        document.body
       )}
     </div>
   );
