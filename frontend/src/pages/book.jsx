@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { apiClient } from "../api/client.js";
 import { payForBooking } from "../utils/razorpay.js";
 import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/serviceIcons.jsx";
@@ -15,6 +15,8 @@ const iconByName = {
 
 export default function Book() {
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const wantedService = searchParams.get("service"); // set by the Home tiles, e.g. /book?service=AC%20Maintenance
 
   // Step 1: service
   const [services, setServices] = useState([]);
@@ -51,6 +53,10 @@ export default function Book() {
       try {
         const { data } = await apiClient.get("/services");
         setServices(data.services);
+        // Home tiles send ?service=<name>; pre-select it if it matches a real service
+        const wanted = (wantedService || "").trim().toLowerCase();
+        const match = wanted && data.services.find((s) => s.name.toLowerCase() === wanted);
+        if (match) setSelectedServiceId(match.id);
       } catch {
         // handled by empty-state below
       } finally {

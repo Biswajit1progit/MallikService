@@ -1,6 +1,10 @@
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiClient } from "../api/client.js";
+import StatusBadge from "../components/statusBadge.jsx";
 import { useAuth } from "../context/authcontext.jsx";
 import TechnicianIllustration from "../components/technicianIllustration.jsx";
+
 import NotificationBell from "../components/NotificationBell.jsx";
 import { IconSnowflake, IconWrench, IconGauge, IconTools } from "../components/serviceIcons.jsx";
 
@@ -37,6 +41,126 @@ const steps = [
   { n: "03", title: "Track live on the way", desc: "A link shows your technician's location in real time, no app needed." },
   { n: "04", title: "Service + warranty", desc: "Work is logged with photos, and covered under warranty after you approve." },
 ];
+
+const CLOSED = ["COMPLETED", "CANCELLED", "NO_SHOW"];
+const quickSteps = ["Book & pay deposit", "Technician calls you", "Track live", "Service + warranty"];
+
+// Signed-in customer: short, action-first home screen.
+function CustomerHome({ user }) {
+  const [next, setNext] = useState(undefined); // undefined = loading, null = none
+
+  useEffect(() => {
+    let off = false;
+    apiClient
+      .get("/bookings")
+      .then(({ data }) => {
+        if (off) return;
+        const open = (data.bookings || [])
+          .filter((b) => !CLOSED.includes(b.status))
+          .sort((a, b) => `${a.slot_date} ${a.slot_time}`.localeCompare(`${b.slot_date} ${b.slot_time}`));
+        setNext(open[0] || null);
+      })
+      .catch(() => !off && setNext(null));
+    return () => {
+      off = true;
+    };
+  }, []);
+
+  const first = (user.name || "").trim().split(/\s+/)[0];
+
+  return (
+    <section className="relative z-10 px-5 sm:px-6 md:px-10 pt-6 sm:pt-10 pb-10 max-w-3xl mx-auto">
+      {/* Greeting + small animation beside it */}
+      <div className="flex items-center justify-between gap-3 mb-6">
+        <div className="min-w-0">
+          <h1 className="font-display text-2xl sm:text-3xl font-semibold truncate">
+            {first ? `Hi, ${first}` : "Welcome back"}
+          </h1>
+          <p className="text-sm text-white/55 mt-1">What can we help with today?</p>
+        </div>
+        <div className="shrink-0 w-[140px] sm:w-[180px] pt-2">
+          <ToolCatchAnimation className="w-full h-auto" />
+        </div>
+      </div>
+
+      {/* Next visit */}
+      <div className="rounded-2xl border border-white/10 bg-white/[0.04] p-4 sm:p-5 mb-6">
+        <div className="font-mono text-[10px] tracking-[0.1em] uppercase text-brand-cool mb-2">Your next visit</div>
+        {next === undefined ? (
+          <div className="h-12 rounded-lg bg-white/5 animate-pulse" />
+        ) : next ? (
+          <Link to="/bookings" className="flex items-center justify-between gap-3">
+            <div className="min-w-0">
+              <div className="font-display font-semibold leading-snug">{next.service_name}</div>
+              <div className="text-sm text-white/60 mt-0.5">
+                {next.slot_date} · {next.slot_time}
+              </div>
+            </div>
+            <div className="flex items-center gap-2 shrink-0">
+              <StatusBadge status={next.status} />
+              <span className="text-white/40">›</span>
+            </div>
+          </Link>
+        ) : (
+          <div className="flex items-center justify-between gap-3">
+            <span className="text-sm text-white/60">No visit booked yet</span>
+            <Link
+              to="/book"
+              className="px-4 py-2 rounded-lg text-sm font-semibold bg-brand-accent hover:bg-brand-accent-hover transition-colors"
+            >
+              Book now
+            </Link>
+          </div>
+        )}
+      </div>
+
+      {/* Service tiles */}
+      <h2 className="font-display text-lg font-semibold mb-3">What do you need?</h2>
+      <div className="grid grid-cols-2 gap-3 mb-6">
+        {services.map(({ icon: Icon, title, meta }) => (
+          <Link
+            key={title}
+            to={`/book?service=${encodeURIComponent(title)}`}
+            className="rounded-2xl border border-white/10 bg-white/[0.03] p-4 active:bg-white/[0.08] hover:border-brand-cool/40 transition-colors"
+          >
+            <div className="w-10 h-10 rounded-xl bg-brand-cool/10 flex items-center justify-center mb-3">
+              <Icon className="w-5 h-5 text-brand-cool" />
+            </div>
+            <div className="font-display font-semibold text-sm leading-snug mb-1">{title}</div>
+            <div className="text-[11px] font-mono text-brand-accent">{meta}</div>
+          </Link>
+        ))}
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-2 rounded-2xl border border-white/10 bg-white/[0.03] py-3 mb-6 text-center">
+        <div>
+          <div className="font-display font-bold text-brand-accent">70km</div>
+          <div className="text-[10px] text-white/45">service radius</div>
+        </div>
+        <div>
+          <div className="font-display font-bold text-brand-cool">Live</div>
+          <div className="text-[10px] text-white/45">tracking</div>
+        </div>
+        <div>
+          <div className="font-display font-bold text-brand-cool">30 days</div>
+          <div className="text-[10px] text-white/45">warranty</div>
+        </div>
+      </div>
+
+      {/* How it works strip */}
+      <div className="font-mono text-[10px] tracking-[0.1em] uppercase text-brand-cool mb-2">How it works</div>
+      <div className="flex gap-2 overflow-x-auto pb-1 -mx-5 px-5 sm:mx-0 sm:px-0">
+        {quickSteps.map((t, i) => (
+          <div key={t} className="shrink-0 rounded-xl border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/70">
+            <span className="font-display font-bold text-white/25 mr-1.5">{i + 1}</span>
+            {t}
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
 
 export default function Home() {
   const { user, logout, isLoading } = useAuth();
@@ -98,6 +222,10 @@ export default function Home() {
         )}
       </header>
 
+      {user?.role === "customer" ? (
+        <CustomerHome user={user} />
+      ) : (
+      <>
       {/* Hero */}
       <section className="relative z-10 px-5 sm:px-6 md:px-10 pt-10 sm:pt-14 md:pt-20 pb-12 sm:pb-16 max-w-6xl mx-auto grid md:grid-cols-2 gap-8 md:gap-10 items-center">
         <div>
@@ -109,7 +237,7 @@ export default function Home() {
           </h1>
           <p className="text-white/60 text-sm sm:text-base md:text-lg leading-relaxed mb-7 sm:mb-8 max-w-md">
             {user
-              ? "You're signed in. Booking is coming next - for now, take a look at what we cover."
+              ? "Your account is ready. Take a look at what we cover."
               : "AC installation, shifting, maintenance and appliance repair - a real technician confirmed by phone and tracked live on the way to your door."}
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-3">
@@ -127,7 +255,8 @@ export default function Home() {
             </a>
           </div>
 
-         
+          {/* Technician catching his tools (animated; still picture if the phone asks for reduced motion) */}
+          <ToolCatchAnimation className="mt-8 sm:mt-10 w-full max-w-[340px] sm:max-w-[400px] h-auto mx-auto sm:mx-0" />
 
           {/* Trust bar */}
           <div className="flex flex-wrap gap-x-6 sm:gap-x-8 gap-y-4 mt-8 sm:mt-10 pt-6 sm:pt-8 border-t border-white/10">
@@ -199,6 +328,8 @@ export default function Home() {
           ))}
         </div>
       </section>
+      </>
+      )}
 
       {/* Footer */}
       <footer className="relative z-10 px-5 sm:px-6 md:px-10 py-8 sm:py-10 border-t border-white/10 max-w-6xl mx-auto flex flex-col sm:flex-row justify-between items-center gap-2 sm:gap-3 text-center sm:text-left">
