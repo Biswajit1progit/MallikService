@@ -5,6 +5,7 @@ import { payForBooking } from "../utils/razorpay.js";
 import StatusBadge from "../components/statusBadge.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import CompletionReview from "../components/Completionreview.jsx";
+import BrandName from "../components/Brandname.jsx";
 
 // Statuses the customer is still allowed to cancel/reschedule from -
 // mirrors CUSTOMER_MODIFIABLE_STATUSES on the backend, kept in sync manually.
@@ -130,7 +131,7 @@ export default function MyBookings() {
 
       <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
         <Link to="/" className="font-display font-bold text-lg sm:text-xl">
-          ServiceBook
+          <BrandName />
         </Link>
         <div className="flex items-center gap-2 sm:gap-3">
           <NotificationBell />
