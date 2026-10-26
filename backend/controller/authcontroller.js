@@ -1,6 +1,6 @@
 import bcrypt from "bcrypt";
 import { pool } from "../config/db.js";
-import { verifyGoogleToken } from "../config/googleClient.js";
+import { verifyGoogleToken } from "../config/googleclient.js";
 import { findBlocked, BLOCKED_MESSAGE } from "../utils/block.js";
 import {
   generateAccessToken,
