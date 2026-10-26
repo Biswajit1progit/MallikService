@@ -7,7 +7,7 @@ import { getSocket } from "../utils/socket.js";
 import StatusBadge from "../components/statusBadge.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import CompletionForm from "../components/Completionform.jsx";
-import WarrantyLookup from "../components/WarrantyLookup.jsx";
+import WarrantyLookup from "../components/Warrantylookup.jsx";
 import AdminOverview from "../components/Adminoverview.jsx";
 import AdminActivityFeed from "../components/Adminactivityfeed.jsx";
 import AdminTechnicians from "../components/Admintechnicians.jsx";
