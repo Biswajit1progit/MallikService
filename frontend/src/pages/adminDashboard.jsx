@@ -1,3 +1,4 @@
+import BrandName from "../components/Brandname.jsx";
 import { useState, useEffect, useRef } from "react";
 import { Link } from "react-router-dom";
 import { apiClient, getAccessToken, setAccessToken } from "../api/client.js";
@@ -6,13 +7,13 @@ import { getSocket } from "../utils/socket.js";
 import StatusBadge from "../components/statusBadge.jsx";
 import NotificationBell from "../components/NotificationBell.jsx";
 import CompletionForm from "../components/Completionform.jsx";
-import WarrantyLookup from "../components/Warrantylookup.jsx";
+import WarrantyLookup from "../components/WarrantyLookup.jsx";
 import AdminOverview from "../components/Adminoverview.jsx";
 import AdminActivityFeed from "../components/Adminactivityfeed.jsx";
 import AdminTechnicians from "../components/Admintechnicians.jsx";
 import AdminRefunds from "../components/Adminrefund.jsx";
 import AdminReports from "../components/Adminreports.jsx";
-import BrandName from "../components/Brandname.jsx";
+import AdminUsers from "../components/adminuser1.jsx";
 
 // Single primary next-action per status - keeps the dashboard to one clear
 // tap per job instead of a confusing dropdown of every possible status.
@@ -55,6 +56,7 @@ const TABS = [
   { id: "jobs", label: "Jobs" },
   { id: "activity", label: "Activity" },
   { id: "team", label: "Team" },
+  { id: "users", label: "Users" },
   { id: "refunds", label: "Refunds" },
   { id: "reports", label: "Reports" },
 ];
@@ -378,7 +380,7 @@ export default function AdminDashboard() {
 
       <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
         <Link to="/" className="font-display font-bold text-lg sm:text-xl">
-          <BrandName/> <span className="text-brand-accent text-sm font-normal">Admin</span>
+          <BrandName /> <span className="text-brand-accent text-sm font-normal">Admin</span>
         </Link>
         <NotificationBell />
       </header>
@@ -415,6 +417,7 @@ export default function AdminDashboard() {
           <AdminActivityFeed key={`a${navKey}`} initialFilter={feedFilter} onChanged={loadOverview} />
         )}
         {tab === "team" && <AdminTechnicians />}
+        {tab === "users" && <AdminUsers />}
         {tab === "refunds" && <AdminRefunds key={`r${navKey}`} initialStatus={refundFilter} />}
         {tab === "reports" && <AdminReports onChanged={loadOverview} />}
 

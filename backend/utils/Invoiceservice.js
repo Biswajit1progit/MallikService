@@ -11,7 +11,7 @@ const round2 = (n) => Math.round(Number(n) * 100) / 100;
 export function businessInfo() {
   const gstin = (process.env.BUSINESS_GSTIN || "").trim();
   return {
-    name: process.env.BUSINESS_NAME || "ServiceBook",
+    name: process.env.BUSINESS_NAME || "MallikService",
     address: process.env.BUSINESS_ADDRESS || "",
     phone: process.env.BUSINESS_PHONE || "",
     email: process.env.BUSINESS_EMAIL || "",

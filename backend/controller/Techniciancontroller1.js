@@ -7,6 +7,7 @@ import { assertSlotAvailable } from "../utils/slotRules.js";
 import { HttpError, sendError } from "../utils/httpError.js";
 import { normalizePhone } from "../utils/phone.js";
 import { CALL_DUE_FIELDS_SQL } from "../utils/CallDue.js";
+import { findBlocked } from "../utils/block.js";
 
 const INDIA_TODAY = `(now() AT TIME ZONE 'Asia/Kolkata')::date`;
 const WAITING = ["CONFIRMED", "SCHEDULED", "CALL_CONFIRMED", "RESCHEDULE_NEEDED"];
@@ -365,6 +366,9 @@ export async function adminCreateTechnician(req, res) {
 
     await client.query("BEGIN");
 
+    if (await findBlocked(client, { email: cleanEmail, phone: cleanPhone })) {
+      throw new HttpError(409, "This email or mobile number is blacklisted. Unblock it in Users first.");
+    }
     if ((await client.query(`SELECT 1 FROM users WHERE email = $1`, [cleanEmail])).rows.length) {
       throw new HttpError(409, "This email is already registered");
     }

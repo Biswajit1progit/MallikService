@@ -154,6 +154,7 @@ import { resolveTrackingToken } from "./utils/trackingToken.js";
 import { redis } from "./config/redis.js";
 import { pool } from "./config/db.js";
 import { setIO } from "./utils/socketInstance.js";
+import userAdminRoutes from "./routes/Useradminroutes.js";
 
 dotenv.config();
 
@@ -182,6 +183,7 @@ app.use("/api/policy", policyRoutes);
 app.use("/api/invoices", invoiceRoutes);
 app.use("/api/reports", reportRoutes);
 app.use("/api/notifications", notificationRoutes);
+app.use("/api/admin/users", userAdminRoutes);
 
 app.get("/api/health", (req, res) => res.json({ status: "ok" }));
 
