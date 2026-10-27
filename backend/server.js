@@ -155,7 +155,7 @@ import { redis } from "./config/redis.js";
 import { pool } from "./config/db.js";
 import { setIO } from "./utils/socketInstance.js";
 import userAdminRoutes from "./routes/Useradminroutes.js";
-
+import { razorpayWebhook } from "./controller/Razorpaywebhook.js";
 dotenv.config();
 
 const app = express();
@@ -166,6 +166,9 @@ app.use(
     credentials: true, // required so the browser sends/receives the httpOnly refresh cookie
   })
 );
+
+// Razorpay's webhook needs the raw request bytes to check its signature, so it is mounted BEFORE express.json()
+app.post("/api/payments/webhook", express.raw({ type: "*/*", limit: "100kb" }), razorpayWebhook);
 app.use(express.json());
 app.use(cookieParser());
 

@@ -183,7 +183,7 @@ export async function refundBookingPayment(bookingId) {
 
 
 
-  import crypto from "crypto";
+  /* import crypto from "crypto";
 import { pool } from "../config/db.js";
 import { razorpay } from "../config/razorpay.js";
 import { isTransitionAllowed } from "../utils/bookingStatus.js";
@@ -365,5 +365,136 @@ export async function verifyPayment(req, res) {
     res.status(500).json({ message: "Couldn't verify this payment right now" });
   } finally {
     client.release();
+  }
+} */
+
+  import crypto from "crypto";
+import { pool } from "../config/db.js";
+import { razorpay } from "../config/razorpay.js";
+import { confirmPaidBooking } from "../utils/Paymentconfirm.js";
+import { refundBookingPayment } from "../utils/refundService.js";
+
+// Kept so any older import of this name from paymentController still works.
+export { refundBookingPayment };
+
+export async function createOrder(req, res) {
+  try {
+    const customerId = req.user.id;
+    const { bookingId } = req.body;
+
+    if (!bookingId) {
+      return res.status(400).json({ message: "bookingId is required" });
+    }
+
+    const bookingResult = await pool.query(
+      `SELECT * FROM bookings WHERE id = $1 AND customer_id = $2`,
+      [bookingId, customerId]
+    );
+    if (bookingResult.rows.length === 0) {
+      return res.status(404).json({ message: "Booking not found" });
+    }
+    const booking = bookingResult.rows[0];
+
+    if (booking.status !== "PENDING") {
+      return res.status(422).json({ message: "This booking isn't awaiting payment" });
+    }
+
+    // Razorpay wants the amount in paise, as an integer
+    const amountInPaise = Math.round(Number(booking.booking_charge) * 100);
+
+    const order = await razorpay.orders.create({
+      amount: amountInPaise,
+      currency: "INR",
+      receipt: `booking_${booking.id}`,
+      notes: { bookingId: String(booking.id), customerId: String(customerId) },
+    });
+
+    await pool.query(
+      `INSERT INTO payments (booking_id, razorpay_order_id, amount, payment_type, status)
+       VALUES ($1, $2, $3, 'advance', 'pending')`,
+      [booking.id, order.id, booking.booking_charge]
+    );
+
+    res.status(201).json({
+      orderId: order.id,
+      amount: order.amount,
+      currency: order.currency,
+      razorpayKeyId: process.env.RAZORPAY_KEY_ID, // safe to expose - it's the public key
+    });
+  } catch (err) {
+    console.error("Create order error:", err);
+    res.status(500).json({ message: "Couldn't start payment right now" });
+  }
+}
+
+export async function verifyPayment(req, res) {
+  try {
+    const customerId = req.user.id;
+    const { bookingId, razorpay_order_id, razorpay_payment_id, razorpay_signature } = req.body;
+
+    if (!bookingId || !razorpay_order_id || !razorpay_payment_id || !razorpay_signature) {
+      return res.status(400).json({ message: "Missing payment verification details" });
+    }
+
+    // HMAC signature check - this is what actually proves the payment is
+    // genuine and untampered, not just trusting whatever the frontend sends.
+    const expectedSignature = crypto
+      .createHmac("sha256", process.env.RAZORPAY_KEY_SECRET)
+      .update(`${razorpay_order_id}|${razorpay_payment_id}`)
+      .digest("hex");
+
+    if (expectedSignature !== razorpay_signature) {
+      // Only this customer's own pending order can be marked failed
+      await pool.query(
+        `UPDATE payments SET status = 'failed'
+         WHERE razorpay_order_id = $1 AND status = 'pending'
+           AND booking_id IN (SELECT id FROM bookings WHERE customer_id = $2)`,
+        [razorpay_order_id, customerId]
+      );
+      return res.status(400).json({ message: "Payment verification failed" });
+    }
+
+    // Signature is genuine. The shared confirm step also checks that this paid order
+    // belongs to THIS booking, is safe to repeat, and refunds if the slot expired meanwhile.
+    const result = await confirmPaidBooking({
+      bookingId: Number(bookingId),
+      orderId: razorpay_order_id,
+      paymentId: razorpay_payment_id,
+      customerId,
+      actor: { id: customerId, role: "customer" },
+    });
+
+    switch (result.outcome) {
+      case "already":
+        if (result.status === "CANCELLED") {
+          return res.status(409).json({
+            message: "This booking was cancelled and your payment has been refunded.",
+            currentStatus: result.status,
+            autoRefunded: true,
+          });
+        }
+      // falls through: a repeat of a payment that already confirmed the booking
+      case "confirmed":
+        return res.json({ message: "Payment verified, booking confirmed", status: result.status });
+      case "not_found":
+        return res.status(404).json({ message: "Booking not found" });
+      case "mismatch":
+        return res.status(400).json({ message: "This payment doesn't belong to this booking" });
+      case "refunded":
+        return res.status(409).json({
+          message: `This booking's slot expired just before your payment completed. Your payment has been automatically refunded.`,
+          currentStatus: result.status,
+          autoRefunded: true,
+        });
+      default:
+        return res.status(409).json({
+          message: `This booking's slot expired just before your payment completed. Refund is being processed - contact support if it doesn't appear within a few days.`,
+          currentStatus: result.status,
+          autoRefunded: false,
+        });
+    }
+  } catch (err) {
+    console.error("Verify payment error:", err);
+    res.status(500).json({ message: "Couldn't verify this payment right now" });
   }
 }
