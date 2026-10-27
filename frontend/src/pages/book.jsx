@@ -204,9 +204,9 @@ export default function Book() {
   // -------------------------------------------------------------------
   if (createdBooking) {
     return (
-      <div className="min-h-screen bg-ink text-white relative overflow-x-hidden">
+      <div className="min-h-screen bg-ink text-white relative overflow-x-clip">
         <div className="pointer-events-none fixed -top-32 left-1/4 w-72 h-72 bg-mist-a blur-3xl" />
-        <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10">
+        <header className="sticky top-0 z-30 bg-ink/85 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10">
           <Link to="/" className="font-display font-bold text-lg sm:text-xl">
             <BrandName />
           </Link>
@@ -331,11 +331,11 @@ export default function Book() {
   // Booking flow - 3 steps
   // -------------------------------------------------------------------
   return (
-    <div className="min-h-screen bg-ink text-white relative overflow-x-hidden">
+    <div className="min-h-screen bg-ink text-white relative overflow-x-clip">
       <div className="pointer-events-none fixed -top-32 left-1/4 w-72 h-72 md:w-96 md:h-96 bg-mist-a blur-3xl" />
       <div className="pointer-events-none fixed top-[38rem] right-0 w-56 h-56 md:w-72 md:h-72 bg-mist-b blur-3xl" />
 
-      <header className="relative z-10 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
+      <header className="sticky top-0 z-30 bg-ink/85 flex justify-between items-center px-5 sm:px-6 md:px-10 py-4 sm:py-5 border-b border-white/10 backdrop-blur-md">
         <Link to="/" className="font-display font-bold text-lg sm:text-xl">
           <BrandName />
         </Link>
