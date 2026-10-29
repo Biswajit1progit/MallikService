@@ -146,6 +146,8 @@ import policyRoutes from "./routes/Policyroutes.js";
 import invoiceRoutes from "./routes/Invoiceroutes.js";
 import reportRoutes from "./routes/Reportroutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
+import { rateLimit } from "./middleware/ratelimit.js";
+
 import { expireStalePendingBookings } from "./utils/bookingExpiry.js";
 import { flagOverdueCalls } from "./utils/CallDue.js";
 import { deliverPending } from "./utils/pushDelivery.js";
@@ -170,6 +172,8 @@ app.use(
 // Razorpay's webhook needs the raw request bytes to check its signature, so it is mounted BEFORE express.json()
 app.post("/api/payments/webhook", express.raw({ type: "*/*", limit: "100kb" }), razorpayWebhook);
 app.use(express.json());
+app.use("/api", rateLimit({ name: "api", max: 600, windowSec: 60, memoryOnly: true }));
+
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
